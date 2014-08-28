@@ -1,16 +1,16 @@
-I_D = # Name of the Internet-Draft (without revision)
-REVNO = # I-D revision number
+I_D = draft-lhotka-netmod-yang-metadata
+REVNO = 00
 DATE ?= $(shell date +%F)
-MODULES =
-FIGURES = model.tree
+MODULES = ietf-yang-metadata
+FIGURES =
 EXAMPLE_BASE = example
 EXAMPLE_TYPE = get-reply
 baty = $(EXAMPLE_BASE)-$(EXAMPLE_TYPE)
 EXAMPLE_INST = $(baty).xml
 PYANG_OPTS =
 
-artworks = $(addsuffix .aw, $(yams)) $(EXAMPLE_INST).aw \
-	   $(addsuffix .aw, $(FIGURES))
+artworks = $(addsuffix .aw, $(yams))
+# $(EXAMPLE_INST).aw $(addsuffix .aw, $(FIGURES))
 idrev = $(I_D)-$(REVNO)
 yams = $(addsuffix .yang, $(MODULES))
 xsldir = .tools/xslt
@@ -21,7 +21,7 @@ y2dopts = -t $(EXAMPLE_TYPE) -b $(EXAMPLE_BASE)
 
 .PHONY: all validate clean rnc
 
-all: $(idrev).txt $(schemas) model.tree
+all: $(idrev).txt # $(schemas) model.tree
 
 $(idrev).xml: $(I_D).xml $(artworks) figures.ent yang.ent
 	@xsltproc $(xslpars) $(xsldir)/upd-i-d.xsl $< | xmllint --noent -o $@ -
