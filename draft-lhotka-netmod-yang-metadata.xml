@@ -9,12 +9,14 @@
 <!-- Add other entity declarations here, e.g. for bibliographic items: -->
 <!ENTITY RFC6020 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6020.xml">
-]>
+<!ENTITY RFC6241 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.6241.xml">
+<!ENTITY RESTCONF SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-netconf-restconf.xml">]>
 
 <?rfc strict="yes"?>
 <?rfc toc="yes"?>
 <?rfc tocdepth="3"?>
-<?rfc symrefs="yes"?>
+<?rfc symrefs="no"?>
 <?rfc sortrefs="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
@@ -45,6 +47,64 @@
 
   <middle>
     <section anchor="introduction" title="Introduction">
+      <t>There is a need to be able to annotate instances of
+      YANG <xref target="RFC6020"/> data nodes with various
+      metadata. Typical use cases are:
+      <list style="symbols">
+	<t>Deactivating a subtree in a configuration datastore while
+	keeping the data in place.</t>
+	<t>Qualifying the data model information with
+	instance-specific data. For example, an annotation may be
+	attached to an instance of a leaf with the "union" type to
+	indicate the member type to which the instance belongs.</t>
+	<t>RPC operations may use metadata annotations for different
+	purposes in both requests and responses. For example, NETCONF
+	&lt;edit-config&gt; operation (see Section 7.2 of <xref
+	target="RFC6241"/>) uses annotations in the form of XML
+	attributes for identifying the point in the configuration and
+	type of the operation.</t>
+      </list></t>
+      <t>However, metadata annotations could potentially lead to
+      interoperability problems if they are used in an ad hoc way by
+      different organizations and/or without proper documentation. A
+      sound metadata framework for YANG should therefore satisfy these
+      requirements:
+      <list style="numbers">
+	<t>The set of annotations must be extensible in a distributed
+	manner so as to allow for defining new annotations without
+	running into the risk of collisions with annotations defined
+	and used by others.</t>
+	<t>Syntax and semantics of annotations must be documented and
+	the documentation must be easily accessible.</t>
+	<t>Clients of network management protocols such as
+	NETCONF <xref target="RFC6241"/> or RESTCONF <xref
+	target="I-D.ietf-netconf-restconf"/> must be able to learn all
+	annotations supported by a given server and identify each of
+	them correctly.</t>
+      </list></t>
+      <t>This document proposes a systematic way for defining and
+      using metadata annotations that satisfies the above
+      requirements. For this purpose, YANG extension statement
+      "annotation" is defined in the module "ietf-yang-metadata"
+      (<xref target="ietf-yang-metadata"/>). Other YANG modules
+      importing this module can use the "annotation" statement for
+      defining one or more annotations.</t>
+      <t>The benefits of defining annotations in a YANG module are as
+      follows:
+      <list style="symbols">
+	<t>Each annotation is bound to a YANG module name, namespace
+	URI and prefix. This makes its encoding in instance documents
+	(both XML and JSON) straightforward and consistent with the
+	encoding of YANG data node instances.</t>
+	<t>Annotations are indirectly registered through IANA YANG
+	module registration.</t>
+	<t>Servers may indicate support for certain annotations using
+	standard module advertisement methods, such as the
+	&lt;hello&gt; message in NETCONF.</t>
+      </list></t>
+    </section>
+
+    <section anchor="terminology" title="Terminology">
       <t></t>
     </section>
 
@@ -60,7 +120,7 @@
       <t></t>
     </section>
 
-    <section anchor="yang" title="YANG Module">
+    <section anchor="ietf-yang-metadata" title="Metadata YANG Module">
 
       <t></t>
 
@@ -84,6 +144,11 @@
   <back>
     <references title="Normative References">
       &RFC6020;
+      &RFC6241;
+    </references>
+
+    <references title="Informative References">
+      &RESTCONF;
     </references>
 
     <section anchor="rpc-example" title="Example: NETCONF &lt;get&gt; Reply">
