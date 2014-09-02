@@ -48,6 +48,18 @@
       <t></t>
     </section>
 
+    <section anchor="annotdef" title="Defining Annotations in YANG">
+      <t></t>
+    </section>
+
+    <section anchor="dsdl" title="Representing Annotations in DSDL Schemas">
+      <t></t>
+    </section> 
+
+    <section anchor="encoding" title="The Encoding of Annotations">
+      <t></t>
+    </section>
+
     <section anchor="yang" title="YANG Module">
 
       <t></t>
