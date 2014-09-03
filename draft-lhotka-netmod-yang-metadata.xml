@@ -11,7 +11,15 @@
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6020.xml">
 <!ENTITY RFC6241 SYSTEM
 "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6241.xml">
-<!ENTITY RESTCONF SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-netconf-restconf.xml">]>
+<!ENTITY RFC7159 SYSTEM
+"http://xml.resource.org/public/rfc/bibxml/reference.RFC.7159.xml">
+<!ENTITY RESTCONF SYSTEM
+"http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-netconf-restconf.xml">
+<!ENTITY XML SYSTEM
+"http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-netmod-yang-json.xml">
+<!ENTITY YANG-JSON SYSTEM
+"http://xml2rfc.ietf.org/public/rfc/bibxml4/reference.W3C.REC-xml-20081126.xml">
+]>
 
 <?rfc strict="yes"?>
 <?rfc toc="yes"?>
@@ -59,7 +67,7 @@
 	indicate the member type to which the instance belongs.</t>
 	<t>RPC operations may use metadata annotations for different
 	purposes in both requests and responses. For example, NETCONF
-	&lt;edit-config&gt; operation (see Section 7.2 of <xref
+	&lt;edit-config&gt; operation (see section 7.2 of <xref
 	target="RFC6241"/>) uses annotations in the form of XML
 	attributes for identifying the point in the configuration and
 	type of the operation.</t>
@@ -109,7 +117,41 @@
     </section>
 
     <section anchor="annotdef" title="Defining Annotations in YANG">
-      <t></t>
+      <t>Metadata annotations are defined with YANG extension
+      statement "annotation". This YANG language extension is defined
+      in the module "ietf-yang-metadata" (<xref
+      target="ietf-yang-metadata"/>).</t>
+      <t>The "annotation" keyword must always be prepended with the
+      namespace prefix assigned when the "ietf-yang-metadata" module
+      is imported (see section 7.17 in <xref target="RFC6020"/>). In
+      the following text and examples, we will use the "md" prefix for
+      this purpose.</t>
+      <t>Substatements of "md:annotation" are shown in <xref
+      target="tab.annsub"/>. They are all core YANG statements, and
+      the numbers in the second column refer to the corresponding
+      sections in RFC 6020_<xref target="RFC6020"/> where each
+      statement is described.</t>
+      <texttable anchor="tab.annsub"
+		 title='Substatements of "md:annotation".'>
+	<ttcol>substatement</ttcol>
+	<ttcol>RFC 6020 section</ttcol>
+	<ttcol>cardinality</ttcol>
+	<c>description</c><c>7.19.3</c><c>0..1</c>
+	<c>reference</c><c>7.19.4</c><c>0..1</c>
+	<c>status</c><c>7.19.2</c><c>0..1</c>
+	<c>type</c><c>7.6.3</c><c>0..1</c>
+	<c>units</c><c>7.3.3</c><c>0..1</c>
+      </texttable>
+      <t>Using the "type" statement, a type may be specified for the
+      annotation value according to the same rules as for YANG leaf or
+      leaf-list types. However, the "type" statement is optional as a
+      substatement of "md:annotation" statement. If it is not present,
+      the built-in "string" type is the default.</t>
+      <t>For example, the following module defines the "inactive"
+      annotation:</t>
+      <figure>
+	&example-inactive.yang;
+      </figure>
     </section>
 
     <section anchor="dsdl" title="Representing Annotations in DSDL Schemas">
@@ -117,7 +159,38 @@
     </section> 
 
     <section anchor="encoding" title="The Encoding of Annotations">
-      <t></t>
+      <t>XML attributes <xref target="W3C.REC-xml-20081126"/> are a
+      natural choice for encoding metadata in XML instance
+      documents. JSON <xref target="RFC7159"/> has no such such
+      generic mechanism for adding metadata. This document thus
+      introduces a special encoding method that is consistent with the
+      JSON encoding of YANG data node instance as defined in <xref
+      target="I-D.ietf-netmod-yang-json"/>.</t>
+
+      <section anchor="enc-xml" title="XML Encoding">
+	<t>Metadata annotations are added to XML-encoded instances of
+	YANG data nodes as XML attributes. The namespace of such an
+	attribute is identified by the URI that appears as the
+	argument of the "namespace" statement in the YANG module that
+	defines the annotation. It is RECOMMENDED that the prefix
+	specified "prefix" statement in the same module is used for
+	in the qualified name of the annotation.</t>
+	<t>For example, the "inactive" annotation as defined in <xref
+	target="annotdef"/> may be encoded as follows:</t>
+	<figure>
+	  <artwork>
+    <![CDATA[<foo xmlns:ein="http://example.org/example-inactive"
+         ein:inactive="true">
+        ...
+      </foo>]]>
+	  </artwork>
+	</figure>
+      </section>
+
+      <section anchor="enc-json" title="JSON Encoding">
+	<t></t>
+      </section>
+
     </section>
 
     <section anchor="ietf-yang-metadata" title="Metadata YANG Module">
@@ -145,10 +218,13 @@
     <references title="Normative References">
       &RFC6020;
       &RFC6241;
+      &RFC7159;
     </references>
 
     <references title="Informative References">
       &RESTCONF;
+      &XML;
+      &YANG-JSON;
     </references>
 
     <section anchor="rpc-example" title="Example: NETCONF &lt;get&gt; Reply">
