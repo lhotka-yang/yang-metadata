@@ -9,8 +9,8 @@ baty = $(EXAMPLE_BASE)-$(EXAMPLE_TYPE)
 EXAMPLE_INST = $(baty).xml
 PYANG_OPTS =
 
-artworks = $(addsuffix .aw, $(yams))
-# $(EXAMPLE_INST).aw $(addsuffix .aw, $(FIGURES))
+artworks = $(addsuffix .aw, $(yams)) $(addsuffix .aw, $(FIGURES))
+# $(EXAMPLE_INST).aw
 idrev = $(I_D)-$(REVNO)
 yams = $(addsuffix .yang, $(MODULES))
 xsldir = .tools/xslt
@@ -63,7 +63,7 @@ else
 	done
 endif
 
-%.yang.aw: %.yang
+ietf-%.yang.aw: ietf-%.yang
 	@pyang $(PYANG_OPTS) --ietf $<
 	@echo '<artwork>' > $@
 	@echo '<![CDATA[<CODE BEGINS> file '"\"$*@YYYY-MM-DD.yang\"" >> $@
