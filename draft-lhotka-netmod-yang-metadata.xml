@@ -342,6 +342,8 @@
 
     <section anchor="ietf-yang-metadata" title="Metadata YANG Module">
 
+      &rfc-ed-hint;
+
       <figure>
 	&ietf-yang-metadata.yang;
       </figure>
