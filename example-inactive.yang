@@ -1,4 +1,3 @@
-// -*- mode: yang; fill-column: 66; -*-
 module example-inactive {
   namespace "http://example.org/example-inactive";
   prefix "ein";
@@ -8,8 +7,9 @@ module example-inactive {
   md:annotation inactive {
     type boolean;
     description
-      "If this annotation is attached to a configuration data node, and
-       its value is 'true', then the server MUST behave as if the
-       data subtree rooted at this node was not present.";
+      "If this annotation is attached to a configuration data node,
+       and its value is 'true', then the server MUST behave
+       as if the data subtree rooted at this node was not
+       present.";
   }
 }
