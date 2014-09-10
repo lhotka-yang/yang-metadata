@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE rfc SYSTEM ".tools/schema/rfc2629.dtd" [
-<!ENTITY % netmod SYSTEM ".tools/bplate/netmod.ent">
-%netmod;
+<!ENTITY % COMMON SYSTEM ".tools/bplate/common.ent">
+%COMMON;
+<!ENTITY % WG SYSTEM ".tools/bplate/netmod.ent">
+%WG;
 <!ENTITY % figures SYSTEM "figures.ent">
 %figures;
 <!ENTITY % yang SYSTEM "yang.ent">
@@ -48,7 +50,7 @@
     </author>
     <date year="YYYY-MM-DD"/>
     <area/>
-    <workgroup>NETMOD Working Group</workgroup>
+    &wg;
 
     <abstract>
       <t></t>
