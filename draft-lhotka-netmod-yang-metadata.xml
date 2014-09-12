@@ -442,9 +442,10 @@
 	</figure>
 	where PREFIX is the namespace prefix bound to the namespace
 	URI of the YANG module that contains the "md:annotation"
-	statement. The "rng:attribute" pattern SHALL be inserted as a
-	child of the named pattern definition described in item <xref
-	target="it.npdef" format="counter"/>.</t>
+	statement. Each "rng:attribute" pattern SHALL be wrapped in
+	the &lt;rng:optional&gt; pattern, and this SHALL be inserted
+	as a child of the named pattern definition described in
+	item <xref target="it.npdef" format="counter"/>.</t>
 	<t>Substatements of "md:annotation", if there are any, SHALL
 	be mapped to children of the "rng:attribute" pattern exactly
 	as described in sec. 10 of <xref target="RFC6110"/>.</t>
@@ -455,12 +456,14 @@
       <figure>
 	<artwork>
     <![CDATA[<rng:define name="__yang_metadata__">
-      <rng:attribute name="ein:inactive">
-        <rng:choice>
-          <rng:value>true</rng:value>
-          <rng:value>false</rng:value>
-        </rng:choice>
-      </rng:attribute>
+      <rng:optional>
+        <rng:attribute name="ein:inactive">
+          <rng:choice>
+            <rng:value>true</rng:value>
+            <rng:value>false</rng:value>
+          </rng:choice>
+        </rng:attribute>
+      </rng:optional>
     </rng:define>]]>
 	</artwork>
       </figure>
