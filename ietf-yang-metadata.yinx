@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<module name="ietf-yang-metadata"
+        xmlns="urn:ietf:params:xml:ns:yang:yin:1"
+        xmlns:md="urn:ietf:params:xml:ns:yang:ietf-routing"
+        xmlns:h="http://www.w3.org/1999/xhtml"
+        xmlns:xi="http://www.w3.org/2001/XInclude">
+  <namespace uri="urn:ietf:params:xml:ns:yang:ietf-yang-metadata"/>
+  <prefix value="md"/>
+  <organization>
+    <text>IETF NETMOD (NETCONF Data Modeling Language) Working Group</text>
+  </organization>
+  <contact>
+    <text>
+      <xi:include href="../yang/templates/ietf-boilerplate.yinx"
+                  xpointer="xpointer(id('contact')/*)"/>
+      <h:p>
+        Editor:   Ladislav Lhotka<h:br/>
+                  &lt;mailto:lhotka@nic.cz&gt;
+      </h:p>
+    </text>
+  </contact>
+  <description>
+    <text>
+      <h:p>This YANG module defines an extension statement that allows
+      for defining metadata annotations.</h:p>
+      <xi:include href="../yang/templates/ietf-boilerplate.yinx"
+                  xpointer="xpointer(id('desc')/*)"/>
+    </text>
+  </description>
+  <revision date="2014-09-11">
+    <description>
+      <text>Initial revision.</text>
+    </description>
+    <reference>
+      <text>
+	RFC XXXX: Defining and Using Metadata with YANG
+      </text>
+    </reference>
+  </revision>
+
+  <extension name="annotation">
+    <argument name="name"/>
+    <description>
+      <text>
+	<h:p>This extension allows for defining metadata annotations
+	in YANG modules. The 'md:annotation' statement can appear only
+	at the top level of a YANG module.</h:p>
+	<h:p>An annotation defined with this extension statement
+	inherits the namespace and other context from the YANG module
+	in which it is defined.</h:p>
+	<h:p>Other properties of the annotation and
+	documentation may be specified using the following standard
+	YANG substatements (all are optional and may appear only
+	once): 'type', 'description', 'reference', 'status' and
+	'units'. If the 'type' statement is not present, the built-in
+	'string' type is used by default.</h:p>
+	<h:p>A server announces support for a particular annotation by
+	including the module in which the annotation is defined among
+	the advertised YANG modules (e.g. in NETCONF hello
+	message). Depending on the prescribed usage patterns, the
+	annotation then may be attached by the server and/or client to
+	any valid instance of a data node defined by the server's data
+	model.</h:p>
+	<h:p>XML and JSON encoding of annotations is defined in
+	RFC XXXX.</h:p>
+      </text>
+    </description>
+  </extension>
+
+</module>

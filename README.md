@@ -1,4 +1,4 @@
-YANG Metadata
+yang-metadata
 ==============
 
 This project develops standard means for defining and using metadata
