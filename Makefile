@@ -19,7 +19,7 @@ xslpars = --stringparam date $(DATE) --stringparam i-d-name $(I_D) \
 schemas = $(baty).rng $(baty).sch $(baty).dsrl
 y2dopts = -t $(EXAMPLE_TYPE) -b $(EXAMPLE_BASE)
 
-.PHONY: all validate clean rnc
+.PHONY: all validate clean rnc refs
 
 all: $(idrev).txt # $(schemas) model.tree
 
@@ -43,6 +43,8 @@ hello.xml: $(yams) hello-external.ent
 	@echo '</capabilities>' >> $@
 	@echo '</hello>' >> $@
 
+refs: yang.ent figures.ent $(artworks)
+	xsltproc --output stdrefs.ent $(xsldir)/get-refs.xsl $(I_D).xml
 
 yang.ent: $(yams)
 	@echo '<!-- External entities for files with modules -->' > $@
@@ -62,6 +64,10 @@ else
 	  echo '<!ENTITY '"$$f SYSTEM \"$$f.aw\">" >> $@;  \
 	done
 endif
+
+%.yang: %.yinx
+	@xsltproc --xinclude $(xsldir)/canonicalize.xsl $< | \
+	  xsltproc --output $@ $(xslpars) $(xsldir)/yin2yang.xsl -
 
 ietf-%.yang.aw: ietf-%.yang
 	@pyang $(PYANG_OPTS) --ietf $<
