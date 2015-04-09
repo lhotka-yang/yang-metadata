@@ -8,8 +8,6 @@ module example-inactive {
     type boolean;
     description
       "If this annotation is attached to a configuration data node,
-       and its value is 'true', then the server MUST behave
-       as if the data subtree rooted at this node was not
-       present.";
+       then the data subtree rooted at this node is deactivated.";
   }
 }

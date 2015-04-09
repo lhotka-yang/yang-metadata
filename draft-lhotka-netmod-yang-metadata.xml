@@ -2,7 +2,7 @@
 <!DOCTYPE rfc SYSTEM ".tools/schema/rfc2629.dtd" [
 <!ENTITY % COMMON SYSTEM ".tools/bplate/common.ent">
 %COMMON;
-<!ENTITY % WG SYSTEM ".tools/bplate/netmod.ent">
+<!ENTITY % WG SYSTEM ".tools/bplate/ietf-wg.ent">
 %WG;
 <!ENTITY % figures SYSTEM "figures.ent">
 %figures;
@@ -48,34 +48,33 @@
     </author>
     <date year="YYYY-MM-DD"/>
     <area>ops</area>
-    &wg;
+    &netmod-wg;
 
     <abstract>
       <t>This document defines a YANG extension statement that allows
-      for defining metadata annotions in YANG modules. The document
-      also specifies the encoding of annotations and rules for
-      annotating instances of YANG data nodes.</t>
+      for defining the syntax of metadata annotions in YANG
+      modules. The document also specifies the XML and JSON encoding
+      of annotations and other rules for annotating instances of YANG
+      data nodes.</t>
     </abstract>
   </front>
 
   <middle>
     <section anchor="introduction" title="Introduction">
       <t>There is a need to be able to annotate instances of
-      YANG <xref target="RFC6020"/> data nodes with various
-      metadata. Typical use cases are:
+      YANG <xref target="RFC6020"/> data nodes with metadata. Typical
+      use cases are:
       <list style="symbols">
-	<t>Deactivating a subtree in a configuration datastore while
-	keeping the data in place.</t>
-	<t>Qualifying the data model information with
-	instance-specific data. For example, an annotation may be
-	attached to an instance of a leaf with the "union" type to
-	indicate the member type to which the instance belongs.</t>
-	<t>RPC operations may use metadata annotations for different
-	purposes in both requests and responses. For example, the
-	&lt;edit-config&gt; operation in the NETCONF protocol (see
-	section 7.2 of <xref target="RFC6241"/>) uses annotations in
-	the form of XML attributes for identifying the point in the
-	configuration and type of the operation.</t>
+        <t>Deactivating a subtree in a configuration datastore while
+        keeping the data in place.</t>
+        <t>Complementing data model information with instance-specific
+        data.</t>
+        <t>RPC operations may use metadata annotations for various
+        purposes in both requests and responses. For example, the
+        &lt;edit-config&gt; operation in the NETCONF protocol (see
+        section 7.2 of <xref target="RFC6241"/>) uses annotations in
+        the form of XML attributes for identifying the point in the
+        configuration and type of the operation.</t>
       </list></t>
       <t>However, metadata annotations could potentially lead to
       interoperability problems if they are used in an ad hoc way by
@@ -83,40 +82,43 @@
       sound metadata framework for YANG should therefore satisfy these
       requirements:
       <list style="numbers">
-	<t>The set of annotations must be extensible in a distributed
-	manner so as to allow for defining new annotations without
-	running into the risk of collisions with annotations defined
-	and used by others.</t>
-	<t>Syntax and semantics of annotations must be documented and
-	the documentation must be easily accessible.</t>
-	<t>Clients of network management protocols such as
-	NETCONF <xref target="RFC6241"/> or RESTCONF <xref
-	target="I-D.ietf-netconf-restconf"/> must be able to learn all
-	annotations supported by a given server and identify each of
-	them correctly.</t>
+        <t>The set of annotations must be extensible in a distributed
+        manner so as to allow for defining new annotations without
+        running into the risk of collisions with annotations defined
+        and used by others.</t>
+        <t>Syntax and semantics of annotations must be documented and
+        the documentation must be easily accessible.</t>
+        <t>Clients of network management protocols such as
+        NETCONF <xref target="RFC6241"/> or RESTCONF <xref
+        target="I-D.ietf-netconf-restconf"/> must be able to learn all
+        annotations supported by a given server and identify each of
+        them correctly.</t>
       </list></t>
-      <t>This document proposes a systematic way for defining and
-      using metadata annotations that satisfies the above
-      requirements. For this purpose, YANG extension statement
-      "annotation" is defined in the module "ietf-yang-metadata"
-      (<xref target="ietf-yang-metadata"/>). Other YANG modules
-      importing this module can use the "annotation" statement for
-      defining one or more annotations.</t>
-      <t>The benefits of defining metadata annotations in a YANG
-      module are as follows:
+      <t>This document proposes a systematic way for defining the
+      syntax of metadata annotations. For this purpose, YANG extension
+      statement "annotation" is defined in the module
+      "ietf-yang-metadata" (<xref
+      target="ietf-yang-metadata"/>). Other YANG modules importing
+      this module can use the "annotation" statement for defining the
+      syntax one or more annotations.</t>
+      <t>Semantics of metadata annotations MUST be defined
+      separately. How it is done is outside the scope of this
+      document.</t>
+      <t>The benefits of defining the syntax of metadata annotations
+      in a YANG module are the following:
       <list style="symbols">
-	<t>Each annotation is bound to a YANG module name, namespace
-	URI and prefix. This makes its encoding in instance documents
-	(both XML and JSON) straightforward and consistent with the
-	encoding of YANG data node instances.</t>
-	<t>Annotations are indirectly registered through IANA YANG
-	module registration.</t> 
-	<t>Annotations are included in the data model. Specifically,
-	servers indicate support for certain annotations using
-	standard module advertisement methods, such as the
-	&lt;hello&gt; message in NETCONF.</t>
-	<t>Values of annotations need not be strings; any YANG
-	built-in or derived type may be used for them.</t>
+        <t>Each annotation is bound to a YANG module name, namespace
+        URI and prefix. This makes its encoding in instance documents
+        (both XML and JSON) straightforward and consistent with the
+        encoding of YANG data node instances.</t>
+        <t>Annotations are indirectly registered through IANA YANG
+        module registration.</t>
+        <t>Annotations are included in the data model. Specifically,
+        servers indicate syntactic support for certain annotations using
+        standard module advertisement methods, such as the
+        &lt;hello&gt; message in NETCONF.</t>
+        <t>Values of annotations are not limited to strings; any YANG
+        built-in or derived type may be used for them.</t>
       </list></t>
     </section>
 
@@ -171,20 +173,21 @@
       <t>primitive type.</t>
     </list></t>
 
-      <t>XML element names and YANG extension statements are always
-      written with explicit namespace prefixes that are assumed to be
-      bound to URI references as shown in <xref target="tab.ns"/>.</t>
+      <t>In the following text, XML element names and YANG extension
+      statements are always written with explicit namespace prefixes
+      that are assumed to be bound to URI references as shown in <xref
+      target="tab.ns"/>.</t>
       <texttable
-	  anchor="tab.ns"
-	  title="Used namespace prefixes and corresponding URI references">
-	<ttcol>Prefix</ttcol>
-	<ttcol>URI Reference</ttcol>
-	<c>rng</c>
-	<c>http://relaxng.org/ns/structure/1.0</c>
-	<c>md</c>
-	<c>urn:ietf:params:xml:ns:yang:ietf-yang-metadata</c>
-	<c>ein</c>
-	<c>http://example.org/example-inactive</c>
+          anchor="tab.ns"
+          title="Used namespace prefixes and corresponding URI references">
+        <ttcol>Prefix</ttcol>
+        <ttcol>URI Reference</ttcol>
+        <c>rng</c>
+        <c>http://relaxng.org/ns/structure/1.0</c>
+        <c>md</c>
+        <c>urn:ietf:params:xml:ns:yang:ietf-yang-metadata</c>
+        <c>ein</c>
+        <c>http://example.org/example-inactive</c>
       </texttable>
     </section>
 
@@ -199,30 +202,40 @@
       sections in RFC 6020 <xref target="RFC6020"/> where each
       statement is described.</t>
       <texttable anchor="tab.annsub"
-		 title='Substatements of "md:annotation".'>
-	<ttcol>substatement</ttcol>
-	<ttcol>RFC 6020 section</ttcol>
-	<ttcol>cardinality</ttcol>
-	<c>description</c><c>7.19.3</c><c>0..1</c>
-	<c>reference</c><c>7.19.4</c><c>0..1</c>
-	<c>status</c><c>7.19.2</c><c>0..1</c>
-	<c>type</c><c>7.6.3</c><c>0..1</c>
-	<c>units</c><c>7.3.3</c><c>0..1</c>
+                 title='Substatements of "md:annotation".'>
+        <ttcol>substatement</ttcol>
+        <ttcol>RFC 6020 section</ttcol>
+        <ttcol>cardinality</ttcol>
+        <c>description</c><c>7.19.3</c><c>0..1</c>
+        <c>if-feature</c><c>7.18.2</c><c>0..n</c>
+        <c>reference</c><c>7.19.4</c><c>0..1</c>
+        <c>status</c><c>7.19.2</c><c>0..1</c>
+        <c>type</c><c>7.6.3</c><c>0..1</c>
+        <c>units</c><c>7.3.3</c><c>0..1</c>
       </texttable>
       <t>Using the "type" statement, a type may be specified for the
       annotation value according to the same rules as for YANG leaf or
       leaf-list types. However, the "type" statement is optional as a
       substatement of "md:annotation" statement. If it is not present,
       the built-in "string" type is the default.</t>
+      <t>The "if-feature" statement, if present, makes the annotation
+      conditional: it is supported only by servers that advertise the
+      corresponding feature.</t>
       <t>For example, the following module defines the "inactive"
       annotation:</t>
       <figure>
-	&example-inactive.yang;
+        &example-inactive.yang;
       </figure>
-      <t>Metadata annotations defined with the "md:annotation"
-      statement may be attached to any valid instance of a data node,
-      i.e., container, leaf, list, leaf-list or anyxml, throughout the
-      data model. Metadata annotations are always optional.</t>
+      <t>By advertising a YANG module in which metadata annotation X
+      is defined using the "md:annotation" statement, a server
+      specifies just the syntax of annotation X. This means that
+      configuration or state data, RPC messages and notifications will
+      be considered syntactically valid if annotation X is attached to
+      any data node instance, provided that all rules stated in this
+      document are observed. However, the semantics of an annotation
+      including the expected behavior of clients and servers MUST be
+      specified by other means that are outside the scope of this
+      document.</t>
     </section>
 
     <section anchor="encoding" title="The Encoding of Annotations">
@@ -234,98 +247,96 @@
       defined in <xref target="I-D.ietf-netmod-yang-json"/>.</t>
 
       <section anchor="enc-xml" title="XML Encoding">
-	<t>Metadata annotations are added to XML-encoded instances of
-	YANG data nodes as XML attributes according to these rules:
-	<list style="symbols">
-	  <t>The local name of the attribute SHALL be the same as the
-	  name of the annotation specified in the argument of the
-	  corresponding "md:annotation" statement.</t>
-	  <t>The namespace of the attribute SHALL be identified by the
-	  URI that appears as the argument of the "namespace"
-	  statement in the YANG module where the annotation is
-	  defined. It is RECOMMENDED that the prefix specified by the
-	  "prefix" statement in the same module is used in the
-	  qualified name of the attribute.</t>
-	  <t>The attribute value SHALL be encoded in the same way as
-	  the value of a YANG leaf instance having the same
-	  type.</t>
-	</list></t>
-	<t>For example, the "inactive" annotation as defined in <xref
-	target="annotdef"/> may be encoded as follows:</t>
-	<figure>
-	  <artwork>
+        <t>Metadata annotations are added to XML-encoded instances of
+        YANG data nodes as XML attributes according to these rules:
+        <list style="symbols">
+          <t>The local name of the attribute SHALL be the same as the
+          name of the annotation specified in the argument of the
+          corresponding "md:annotation" statement.</t>
+          <t>The namespace of the attribute SHALL be identified by the
+          URI that appears as the argument of the "namespace"
+          statement in the YANG module where the annotation is
+          defined. It is RECOMMENDED that the prefix specified by the
+          "prefix" statement in the same module is used in the
+          qualified name of the attribute.</t>
+          <t>The attribute value SHALL be encoded in the same way as
+          the value of a YANG leaf instance having the same
+          type.</t>
+        </list></t>
+        <t>For example, the "inactive" annotation defined in <xref
+        target="annotdef"/> may be encoded as follows:</t>
+        <figure>
+          <artwork>
     <![CDATA[<foo xmlns:ein="http://example.org/example-inactive"
          ein:inactive="true">
       ...
     </foo>]]>
-	  </artwork>
-	</figure>
+          </artwork>
+        </figure>
       </section>
 
       <section anchor="enc-json" title="JSON Encoding">
-	<t>The metadata encoding defined in this section has the
-	following properties:
-	<list style="numbers">
-	  <t>The encoding of YANG data node instances as defined in
-	  <xref target="I-D.ietf-netmod-yang-json"/> does not change.</t>
-	  <t>Namespaces of metadata annotations are encoded in the same
-	  way as namespaces of YANG data node instances, see <xref
-	  target="I-D.ietf-netmod-yang-json"/>.</t>
-	</list></t>
+        <t>The JSON metadata encoding defined in this section has the
+        following properties:
+        <list style="numbers">
+          <t>The encoding of YANG data node instances as defined in
+          <xref target="I-D.ietf-netmod-yang-json"/> does not change.</t>
+          <t>Namespaces of metadata annotations are encoded in the same
+          way as namespaces of YANG data node instances, see <xref
+          target="I-D.ietf-netmod-yang-json"/>.</t>
+        </list></t>
 
-	<section anchor="met-obj" title="Metadata Object and Annotations">
+        <section anchor="met-obj" title="Metadata Object and Annotations">
 
-	  <t>All metadata annotations assigned to a YANG data node
-	  instance are encoded as members (name/value pairs) of a
-	  single JSON object, henceforth denoted as the metadata
-	  object. The placement and name of this object depends on the
-	  type of the data node as specified in the following
-	  subsections.</t>
-	  <t>The name of a metadata annotation (member of the metadata
-	  object) SHALL be of the following form:
-	  <figure>
+          <t>All metadata annotations assigned to a YANG data node
+          instance are encoded as members (name/value pairs) of a
+          single JSON object, henceforth denoted as the metadata
+          object. The placement and name of this object depends on the
+          type of the data node as specified in the following
+          subsections.</t>
+          <t>The name of a metadata annotation (as a member of the
+          metadata object) SHALL be of the following form:
+          <figure>
             <artwork>
     <![CDATA[MODULE_NAME:LOCAL_NAME]]>
-	    </artwork>
-	  </figure>
-	  where MODULE_NAME is the name of the YANG module in which
-	  the annotation is defined, and LOCAL_NAME is the name of the
-	  annotation specified in the argument of the corresponding
-	  "md:annotation" statement.</t>
-	  <t>Note that unlike YANG data node instances, for
-	  annotations the explicit namespace identifier (MODULE_NAME)
-	  must always be used.</t>
-	  <t>The value of a metadata annotation SHALL be encoded in
-	  exactly the same way as the value of a YANG leaf node having
-	  the same type as the annotation.</t>
-	</section>
+            </artwork>
+          </figure>
+          where MODULE_NAME is the name of the YANG module in which
+          the annotation is defined, and LOCAL_NAME is the name of the
+          annotation specified in the argument of the corresponding
+          "md:annotation" statement.</t>
+          <t>Note that unlike YANG data node instances, for
+          annotations the explicit namespace identifier (MODULE_NAME)
+          must always be used.</t>
+          <t>The value of a metadata annotation SHALL be encoded in
+          exactly the same way as the value of a YANG leaf node having
+          the same type as the annotation.</t>
+        </section>
 
-	<section
-	    anchor="enc-cal"
-	    title="Adding Annotations to Container, Anyxml and List
-		   Instances">
+        <section
+            anchor="enc-cal"
+            title="Adding Annotations to Container and List Instances">
 
-	  <t>For an instance that is translated to a JSON object
-	  (i.e., a container, anyxml or list entry), the metadata
-	  object is added as a new member of that object with the name
-	  "@".</t>
-	  <t>Examples:
-	  <list style="symbols">
-	    <t>"cask" is a container or anyxml node:
-	    <figure>
-	      <artwork>
+          <t>For an instance that is encoded as a JSON object (i.e., a
+          container or list entry), the metadata object is added as a
+          new member of that object with the name "@".</t>
+          <t>Examples:
+          <list style="symbols">
+            <t>"cask" is a container node:
+            <figure>
+              <artwork>
     "cask": {
       "@": {
         "example-inactive:inactive": true
       },
       ...
     }
-	      </artwork>
-	    </figure></t>
-	    <t>"seq" is a list whose key is "name", annotation "inactive" is
-	    added only to the first entry:  
-	    <figure>
-	      <artwork>
+              </artwork>
+            </figure></t>
+            <t>"seq" is a list whose key is "name", annotation "inactive" is
+            added only to the first entry:
+            <figure>
+              <artwork>
     "seq": [
       {
         "@": {
@@ -339,60 +350,61 @@
         ...
       }
     ]
-	      </artwork>
-	    </figure></t>
-	  </list></t>
-	  
-	</section>
+              </artwork>
+            </figure></t>
+          </list></t>
 
-	<section
-	    anchor="enc-l"
-	    title="Adding Annotations to Leaf Instances">
+        </section>
 
-	  <t>For a leaf instance, the metadata object is added as a
-	  sibling name/value pair whose the name is the symbol "@"
-	  concatenated with the identifier of the leaf.</t>
-	  <t>For example, if "flag" is a leaf node: 
-	  <figure>
-	    <artwork>
+        <section
+            anchor="enc-l"
+            title="Adding Annotations to Leaf or Anyxml Instances">
+
+          <t>For a leaf or anyxml instance, the metadata object is
+          added as a sibling name/value pair whose the name is the
+          symbol "@" concatenated with the name of the leaf or
+          anyxml member that is being annotated.</t>
+          <t>For example, if "flag" is a leaf node of the "boolean" type:
+          <figure>
+            <artwork>
     "flag": true,
     "@flag": {
       "example-inactive:inactive": true
     }
-	    </artwork>
-	  </figure>
-	  </t>
-	</section>
+            </artwork>
+          </figure>
+          </t>
+        </section>
 
-	<section
-	    anchor="enc-ll"
-	    title="Adding Annotations to Leaf-list Instances">
+        <section
+            anchor="enc-ll"
+            title="Adding Annotations to Leaf-list Instances">
 
-	  <t>For a leaf-list instance, which is represented as a JSON
-	  array with values of a primitive type, annotations may be
-	  assigned to one or more entries by adding a name/array pair
-	  as a sibling the leaf-list instance, where the name is the
-	  symbol "@" concatenated with the identifier of the
-	  leaf-list, and the value is a JSON array whose i-th element
-	  is the metadata object with annotations assigned to the i-th
-	  entry of the leaf-list instance, or null if the i-th entry
-	  has no annotations.</t>
-	  <t>Trailing null values in the array, i.e., those following
-	  the last non-null metadata object, MAY be omitted.</t>
-	  <t>For example, in the following leaf-list instance with four
-	  entries, the "inactive" annotation is added to the second and
-	  third entry in the following way:
-	  <figure>
-	    <artwork>
-    "folio": [6, 3, 7, 8],
-    "@folio": [
+          <t>For a leaf-list instance, which is represented as a JSON
+          array with values of a primitive type, annotations may be
+          assigned to one or more entries by adding a name/array pair
+          as a sibling the leaf-list instance, where the name is the
+          symbol "@" concatenated with the name of the leaf-list that
+          is being annotated, and the value is a JSON array whose i-th
+          element is the metadata object with annotations assigned to
+          the i-th entry of the leaf-list instance, or null if the
+          i-th entry has no annotations.</t>
+          <t>Trailing null values in the array, i.e., those following
+          the last non-null metadata object, MAY be omitted.</t>
+          <t>For example, in the following leaf-list instance with four
+          entries, the "inactive" annotation is added to the second and
+          third entry in the following way:
+          <figure>
+            <artwork>
+    "bibliomod:folio": [6, 3, 7, 8],
+    "@bibliomod:folio": [
       null,
       {"example-inactive:inactive": true},
       {"example-inactive:inactive": true}
     ]
-	    </artwork>
-	  </figure></t>
-	</section>
+            </artwork>
+          </figure></t>
+        </section>
       </section>
     </section>
 
@@ -408,53 +420,53 @@
       transformation of the YANG data model to the hybrid schema (see
       sec. 6 in <xref target="RFC6110"/>), is modified as follows:
       <list style="numbers">
-	<t anchor="it.npdef">If the data model contains at least one
-	"md:annotation" statement, then a RELAX NG named pattern
-	definition MUST be added a child of the root
-	&lt;rng:grammar&gt; element in the hybrid schema. It is
-	RECOMMENDED to use the name "__yang_metadata__" for this named
-	pattern.</t> <t anchor="it.npref">A reference to the named
-	pattern described in item <xref target="it.npdef"
-	format="counter"/> MUST be included as a child of every
-	&lt;rng:element&gt; pattern that corresponds to a container,
-	leaf, list or leaf-list data node.</t>
-	<t>Every metadata annotation definition in the form
-	<figure>
-	  <artwork>
+        <t anchor="it.npdef">If the data model contains at least one
+        "md:annotation" statement, then a RELAX NG named pattern
+        definition MUST be added as a child of the root
+        &lt;rng:grammar&gt; element in the hybrid schema. It is
+        RECOMMENDED to use the name "__yang_metadata__" for this named
+        pattern.</t> <t anchor="it.npref">A reference to the named
+        pattern described in item <xref target="it.npdef"
+        format="counter"/> MUST be included as a child of every
+        &lt;rng:element&gt; pattern that corresponds to a container,
+        leaf, list or leaf-list data node.</t>
+        <t>Every metadata annotation definition in the form
+        <figure>
+          <artwork>
     md:annotation ARGUMENT;
-	  </artwork>
-	</figure>
-	or
-	<figure>
-	  <artwork>
+          </artwork>
+        </figure>
+        or
+        <figure>
+          <artwork>
     md:annotation ARGUMENT {
       ...
     }
-	  </artwork>
-	</figure>
-	is mapped to the following RELAX NG pattern:
-	<figure>
-	  <artwork>
+          </artwork>
+        </figure>
+        is mapped to the following RELAX NG pattern:
+        <figure>
+          <artwork>
     <![CDATA[<rng:attribute name="PREFIX:ARGUMENT">
       ...
     </rng:attribute>]]>
-	  </artwork>
-	</figure>
-	where PREFIX is the namespace prefix bound to the namespace
-	URI of the YANG module that contains the "md:annotation"
-	statement. Each "rng:attribute" pattern SHALL be wrapped in
-	the &lt;rng:optional&gt; pattern, and this SHALL be inserted
-	as a child of the named pattern definition described in
-	item <xref target="it.npdef" format="counter"/>.</t>
-	<t>Substatements of "md:annotation", if there are any, SHALL
-	be mapped to children of the "rng:attribute" pattern exactly
-	as described in sec. 10 of <xref target="RFC6110"/>.</t>
+          </artwork>
+        </figure>
+        where PREFIX is the namespace prefix bound to the namespace
+        URI of the YANG module that contains the "md:annotation"
+        statement. Each "rng:attribute" pattern SHALL be wrapped in
+        the &lt;rng:optional&gt; pattern, and this SHALL be inserted
+        as a child of the named pattern definition described in
+        item <xref target="it.npdef" format="counter"/>.</t>
+        <t>Substatements of "md:annotation", if there are any, SHALL
+        be mapped to children of the "rng:attribute" pattern exactly
+        as described in sec. 10 of <xref target="RFC6110"/>.</t>
       </list></t>
       <t>For example, the named pattern definition (item <xref
       target="it.npdef" format="counter"/>), when constructed only for
       the "inactive" annotation, will have the following form:</t>
       <figure>
-	<artwork>
+        <artwork>
     <![CDATA[<rng:define name="__yang_metadata__">
       <rng:optional>
         <rng:attribute name="ein:inactive">
@@ -465,18 +477,18 @@
         </rng:attribute>
       </rng:optional>
     </rng:define>]]>
-	</artwork>
+        </artwork>
       </figure>
       <t>Every "rng:element" pattern that corresponds to a container,
       leaf, list or leaf-list data node will then contain a reference
       to the above named pattern, for example</t>
       <figure>
-	<artwork>
+        <artwork>
     <![CDATA[<rng:element name="foo:bar">
       <rng:ref name="__yang_metadata__"/>
       ...
     </rng:element>]]>
-	</artwork>
+        </artwork>
       </figure>
       <t>Note that it is not necessary to use such a reference for
       "rng:element" patterns corresponding to anyxml data nodes
@@ -490,10 +502,10 @@
 
     <section anchor="ietf-yang-metadata" title="Metadata YANG Module">
 
-      &rfc-ed-hint;
+      &ed-hint-fill-in;
 
       <figure>
-	&ietf-yang-metadata.yang;
+        &ietf-yang-metadata.yang;
       </figure>
 
     </section>
@@ -534,12 +546,13 @@ reference:    RFC XXXX
 
     <section anchor="security" title="Security Considerations">
 
-      <t>This document introduces a mechanism for defining metadata
-      annotations in YANG modules and using them with instances of
-      YANG data nodes. By itself, this mechanism represents no
-      security threat. Security implications of a particular
-      annotation defined using this mechanism have to be duly
-      considered and documented.</t>
+      <t>This document introduces a mechanism for defining the syntax
+      of metadata annotations in YANG modules and using them with
+      instances of YANG data nodes. By itself, this mechanism
+      represents no security threat. Security implications of a
+      particular annotation defined using this mechanism have to be
+      duly considered and documented in the specification of the
+      annotation's semantics.</t>
 
     </section>
 
@@ -559,20 +572,40 @@ reference:    RFC XXXX
 
     <references title="Informative References">
       <reference anchor="ISO.19757-1">
-	<front>
-	  <title>
-	    Document Schema Definition Languages (DSDL) - Part 1: Overview
-	  </title>
-	  <author>
-	    <organization>International Organization for Standardization</organization>
-	  </author>
-	  <date day="14" month="November" year="2004"/>
-	</front>
-	<seriesInfo name="ISO/IEC" value="19757-1"/>
-	<format type="PDF" target="http://www.dsdl.org/0567.pdf"/>
+        <front>
+          <title>
+            Document Schema Definition Languages (DSDL) - Part 1: Overview
+          </title>
+          <author>
+            <organization>International Organization for Standardization</organization>
+          </author>
+          <date day="14" month="November" year="2004"/>
+        </front>
+        <seriesInfo name="ISO/IEC" value="19757-1"/>
+        <format type="PDF" target="http://www.dsdl.org/0567.pdf"/>
       </reference>
       &RESTCONF;
     </references>
+
+    <section title="Change Log">
+
+      &ed-hint-remove-sec;
+
+      <section title="Changes Between Revisions -00 and -01">
+        <t>
+          <list style="symbols">
+            <t>Encoding of annotations for anyxml nodes was changed
+            to be the same as for leafs. This was necessary because
+            anyxml value now needn't be an object.</t>
+            <t>It is stated that "md:annotation" statement defines
+            only the syntax of an annotation.</t>
+            <t>Allowed "if-feature" as a substatement of
+            "md:annotation".</t>
+          </list>
+        </t>
+      </section>
+
+    </section>
 
   </back>
 </rfc>
