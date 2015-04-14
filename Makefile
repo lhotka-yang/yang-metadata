@@ -1,5 +1,5 @@
-I_D = draft-lhotka-netmod-yang-metadata
-REVNO = 01
+I_D = draft-ietf-netmod-yang-metadata
+REVNO = 00
 DATE ?= $(shell date +%F)
 MODULES = ietf-yang-metadata
 FIGURES = example-inactive.yang
