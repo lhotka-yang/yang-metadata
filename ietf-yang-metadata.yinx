@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <module name="ietf-yang-metadata"
         xmlns="urn:ietf:params:xml:ns:yang:yin:1"
-        xmlns:md="urn:ietf:params:xml:ns:yang:ietf-routing"
+        xmlns:md="urn:ietf:params:xml:ns:yang:ietf-yang-metadata"
         xmlns:h="http://www.w3.org/1999/xhtml"
         xmlns:xi="http://www.w3.org/2001/XInclude">
   <namespace uri="urn:ietf:params:xml:ns:yang:ietf-yang-metadata"/>
