@@ -48,18 +48,18 @@
 	<h:p>An annotation defined with this extension statement
 	inherits the namespace and other context from the YANG module
 	in which it is defined.</h:p>
-	<h:p>Other properties of the annotation and documentation may
-	be specified using the following standard YANG substatements
+	<h:p>Other properties of the annotation and documentation
+	are specified using the following standard YANG substatements
 	(all are optional): 'description', 'if-feature', 'reference',
 	'status', 'type' and 'units'. If the 'type' statement is not
 	present, the built-in 'string' type is used by default.</h:p>
 	<h:p>A server announces syntactic support for a particular
 	annotation by including the module in which the annotation is
-	defined among the advertised YANG modules (e.g. in NETCONF
+	defined among the advertised YANG modules (e.g., in NETCONF
 	hello message).</h:p>
-	<h:p>The 'description' and/or 'reference' statements should
-	provide links to the specification of the annotation's
-	semantics.</h:p>
+	<h:p>Semantics and usage rules for an annotation MUST be
+	specified separately. The 'description' and/or 'reference'
+	statements SHOULD provide corresponding links.</h:p>
 	<h:p>XML and JSON encoding of annotations is defined in
 	RFC XXXX.</h:p>
       </text>
