@@ -119,6 +119,7 @@
 
       <t>The following terms are defined in <xref target="I-D.ietf-netmod-rfc6020bis"/>:
       <list style="symbols">
+        <t>anydata,</t>
         <t>anyxml,</t>
         <t>built-in type,</t>
         <t>derived type,</t>
@@ -294,11 +295,12 @@
 
         <section
             anchor="enc-cal"
-            title="Adding Annotations to Container and List Instances">
+            title="Adding Annotations to Anydata, Container and List Instances">
 
           <t>For an instance that is encoded as a JSON object (i.e., a
-          container or list entry), the metadata object is added as a
-          new member of that object with the name "@".</t>
+          container, a list entry, or anydata node), the metadata
+          object is added as a new member of that object with the name
+          "@".</t>
           <t>Examples:
           <list style="symbols">
             <t>"cask" is a container node:
@@ -564,6 +566,13 @@ reference:    RFC XXXX
 
       &ed-hint-remove-sec;
 
+      <section title="Changes Between Revisions -00 and -01">
+	<t>
+	  <list style="symbols">
+	    <t>Define JSON encoding for annotations attached to 'anydata' nodes.</t>
+	  </list>
+	</t>
+      </section>
       <section title="Changes Between draft-lhotka-netmod-yang-metadata-01 and draft-ietf-netmod-yang-metadata-00">
         <t>
           <list style="symbols">
