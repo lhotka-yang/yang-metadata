@@ -45,6 +45,10 @@
 	<h:p>This extension allows for defining metadata annotations
 	in YANG modules. The 'md:annotation' statement can appear only
 	at the top level of a YANG module.</h:p>
+	<h:p>The argument of the 'md:annotation' statement defines the
+	name of the annotation. Syntactically it is a YANG identifier
+	as defined in RFC 6020bis (TODO: update the reference!),
+	sec. 6.2.</h:p>
 	<h:p>An annotation defined with this extension statement
 	inherits the namespace and other context from the YANG module
 	in which it is defined.</h:p>
