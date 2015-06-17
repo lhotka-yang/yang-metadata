@@ -1,5 +1,5 @@
 I_D = draft-ietf-netmod-yang-metadata
-REVNO = 01
+REVNO = 02
 DATE ?= $(shell date +%F)
 MODULES = ietf-yang-metadata
 FIGURES = example-inactive.yang
