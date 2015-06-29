@@ -340,9 +340,9 @@
             title="Adding Annotations to Anyxml and Leaf Instances">
 
           <t>For an anyxml or leaf instance, the metadata object is
-          added as a sibling name/value pair whose the name is the
-          symbol "@" concatenated with the name of the leaf or anyxml
-          member that is being annotated.</t>
+          added as a sibling name/value pair whose name is the symbol
+          "@" concatenated with the name of the leaf or anyxml member
+          that is being annotated.</t>
           <t>For example, if "flag" is a leaf node of the "boolean" type:
           <figure>
             <artwork>
