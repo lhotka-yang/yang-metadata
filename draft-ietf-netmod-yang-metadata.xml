@@ -35,7 +35,7 @@
 
     <abstract>
       <t>This document defines a YANG extension statement that allows
-      for defining syntax of metadata annotions in YANG modules. The
+      for defining syntax of metadata annotations in YANG modules. The
       document also specifies XML and JSON encoding of annotations and
       other rules for annotating instances of YANG data nodes.</t>
     </abstract>
@@ -200,7 +200,7 @@
       substatement of "md:annotation" statement. If it is not present,
       the built-in "string" type is the default.</t>
       <t>The "if-feature" statement, if present, makes the annotation
-      conditional: it is supported only by servers that advertise the
+      conditional; it is supported only by servers that advertise the
       corresponding feature.</t>
       <t>For example, the following module defines the "inactive"
       annotation:</t>
@@ -485,21 +485,22 @@
       &ed-hint-fill-in;
 
       <t>This document registers the following namespace URI in the
-      IETF XML registry <xref target="RFC3688"/>:</t>
+      "IETF XML registry" <xref target="RFC3688"/>:</t>
       <figure>
         <artwork>
 ---------------------------------------------------------------------
 URI: urn:ietf:params:xml:ns:yang:ietf-yang-metadata
 
-Registrant Contact: The IESG.
+Registrant Contact: The NETMOD WG of the IETF.
 
 XML: N/A, the requested URI is an XML namespace.
 ---------------------------------------------------------------------
         </artwork>
       </figure>
 
-      <t>This document registers the following YANG module in the YANG
-      Module Names registry <xref target="I-D.ietf-netmod-rfc6020bis"/>:</t>
+      <t>This document registers the following YANG module in the
+      "YANG Module Names" registry <xref
+      target="I-D.ietf-netmod-rfc6020bis"/>:</t>
 
       <figure>
         <artwork>
@@ -576,7 +577,7 @@ reference:    RFC XXXX
       <section title="Changes Between draft-lhotka-netmod-yang-metadata-01 and draft-ietf-netmod-yang-metadata-00">
         <t>
           <list style="symbols">
-            <t>References to RFC 6020 were changed to the 6021bis
+            <t>References to RFC 6020 were changed to the 6020bis
             I-D.</t>
             <t>Text about RFC 2119 key words was added to
             "ietf-yang-metadata" module description.</t>
