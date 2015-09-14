@@ -2,7 +2,7 @@ I_D = draft-ietf-netmod-yang-metadata
 REVNO = 02
 DATE ?= $(shell date +%F)
 MODULES = ietf-yang-metadata
-FIGURES = example-inactive.yang
+FIGURES = example-last-modified.yang
 EXAMPLE_BASE = example
 EXAMPLE_TYPE = get-reply
 baty = $(EXAMPLE_BASE)-$(EXAMPLE_TYPE)
@@ -101,4 +101,4 @@ model.tree: hello.xml
 
 clean:
 	@rm -rf *.rng *.rnc *.sch *.dsrl hello.xml model.tree \
-	        $(yams) $(idrev).* $(artworks) figures.ent yang.ent
+	    $(yams) $(idrev).* $(artworks) figures.ent yang.ent
