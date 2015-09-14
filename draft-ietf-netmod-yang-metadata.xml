@@ -35,9 +35,9 @@
 
     <abstract>
       <t>This document defines a YANG extension statement that allows
-      for defining syntax of metadata annotations in YANG modules. The
-      document also specifies XML and JSON encoding of annotations and
-      other rules for annotating instances of YANG data nodes.</t>
+      for defining metadata annotations in YANG modules. The document
+      also specifies XML and JSON encoding of annotations and other
+      rules for annotating instances of YANG data nodes.</t>
     </abstract>
   </front>
 
@@ -47,11 +47,13 @@
       YANG <xref target="I-D.ietf-netmod-rfc6020bis"/> data nodes with metadata. Typical
       use cases are:
       <list style="symbols">
+        <t>Complementing regular data model information with
+        instance-specific metadata, comments etc.</t>
+	<t>Providing information about data rendering in user
+	interfaces.</t>
         <t>Deactivating a subtree in a configuration datastore while
         keeping the data in place.</t>
-        <t>Complementing data model information with instance-specific
-        data.</t>
-        <t>RPC operations may use metadata annotations for various
+        <t>RPC operations often use metadata annotations for various
         purposes in both requests and responses. For example, the
         &lt;edit-config&gt; operation in the NETCONF protocol (see
         section 7.2 of <xref target="RFC6241"/>) uses annotations in
@@ -64,10 +66,10 @@
       documentation. A sound metadata framework for YANG should
       therefore satisfy these requirements:
       <list style="numbers">
-        <t>The set of annotations must be extensible in a distributed
-        manner so as to allow for defining new annotations without
-        running into the risk of collisions with annotations defined
-        and used by others.</t>
+        <t>The set of annotations must be extensible in a
+        decentralised manner so as to allow for defining new
+        annotations without running into the risk of collisions with
+        annotations defined and used by others.</t>
         <t>Syntax and semantics of annotations must be documented and
         the documentation must be easily accessible.</t>
         <t>Clients of network management protocols such as
@@ -75,14 +77,15 @@
         target="I-D.ietf-netconf-restconf"/> must be able to learn all
         annotations supported by a given server and identify each of
         them correctly.</t>
+	<t>Annotations sent by a server should not break clients that
+	don't support them.</t>
       </list></t>
-      <t>This document proposes a systematic way for defining the
-      syntax of metadata annotations. For this purpose, YANG extension
-      statement "annotation" is defined in the module
-      "ietf-yang-metadata" (<xref
-      target="ietf-yang-metadata"/>). Other YANG modules importing
-      this module can use the "annotation" statement for defining the
-      syntax of one or more annotations.</t>
+      <t>This document proposes a systematic way for defining metadata
+      annotations. For this purpose, YANG extension statement
+      "annotation" is defined in the module "ietf-yang-metadata"
+      (<xref target="ietf-yang-metadata"/>). Other YANG modules
+      importing this module can use the "annotation" statement for
+      defining the syntax of one or more annotations.</t>
       <t>The benefits of defining the syntax of metadata annotations
       in a YANG module are the following:
       <list style="symbols">
@@ -90,8 +93,8 @@
         URI and prefix. This makes its encoding in instance documents
         (both XML and JSON) straightforward and consistent with the
         encoding of YANG data node instances.</t>
-        <t>Annotations are indirectly registered through IANA YANG
-        module registration.</t>
+        <t>Annotations are indirectly registered through IANA in the
+        "YANG Module Names" registry <xref target="RFC6020"/>.</t>
         <t>Annotations are included in the data model. YANG compilers
         and tools supporting a certain annotation can thus take them
         into account and modify their behaviour accordingly.</t>
@@ -103,73 +106,91 @@
     </section>
 
     <section anchor="terminology" title="Terminology">
-      <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
-      NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and
-      "OPTIONAL" in this document are to be interpreted as described
-      in <xref target="RFC2119"/>.</t>
 
-      <t>The following terms are defined in <xref target="RFC6241"/>:
-      <list style="symbols">
-        <t>client,</t>
-        <t>datastore,</t>
-        <t>message,</t>
-        <t>operation,</t>
-        <t>server.</t>
-      </list></t>
+      <section anchor="keywords" title="Keywords">
+	<t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
+	"SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and
+	"OPTIONAL" in this document are to be interpreted as described
+	in <xref target="RFC2119"/>.</t>
+      </section>
 
-      <t>The following terms are defined in <xref target="I-D.ietf-netmod-rfc6020bis"/>:
-      <list style="symbols">
-        <t>anydata,</t>
-        <t>anyxml,</t>
-        <t>built-in type,</t>
-        <t>derived type,</t>
-        <t>container,</t>
-        <t>data model,</t>
-        <t>data node,</t>
-        <t>derived type,</t>
-        <t>extension,</t>
-        <t>leaf-list,</t>
-        <t>list,</t>
-        <t>module,</t>
-        <t>RPC operation,</t>
-        <t>submodule,</t>
-        <t>type.</t>
-      </list></t>
+      <section anchor="adopted-terms"
+	       title="Terms Defined in Other Documents">
+	<t>The following terms are defined in <xref target="RFC6241"/>:
+	<list style="symbols">
+          <t>client,</t>
+          <t>datastore,</t>
+          <t>message,</t>
+          <t>operation,</t>
+          <t>server.</t>
+	</list></t>
 
-      <t>The following terms are defined in <xref
-      target="W3C.REC-xml-infoset-20040204"/>:
-      <list style="symbols">
-        <t>attribute,</t>
-        <t>document,</t>
-        <t>element,</t>
-        <t>namespace,</t>
-        <t>prefix.</t>
-      </list></t>
+	<t>The following terms are defined in <xref target="I-D.ietf-netmod-rfc6020bis"/>:
+	<list style="symbols">
+          <t>anydata,</t>
+          <t>anyxml,</t>
+          <t>built-in type,</t>
+          <t>container,</t>
+          <t>data model,</t>
+          <t>data node,</t>
+	  <t>data tree,</t>
+          <t>derived type,</t>
+          <t>extension,</t>
+          <t>leaf-list,</t>
+          <t>list,</t>
+          <t>module,</t>
+          <t>RPC operation,</t>
+          <t>submodule,</t>
+          <t>type.</t>
+	</list></t>
 
-      <t>The following terms are defined in <xref target="RFC7159"/>:
-      <list style="symbols">
-        <t>array,</t>
-        <t>member,</t>
-        <t>object,</t>
-        <t>primitive type.</t>
-      </list></t>
+	<t>The following terms are defined in <xref
+	target="W3C.REC-xml-infoset-20040204"/>:
+	<list style="symbols">
+          <t>attribute,</t>
+          <t>document,</t>
+          <t>element,</t>
+          <t>namespace,</t>
+          <t>prefix.</t>
+	</list></t>
 
-      <t>In the following text, XML element names and YANG extension
-      statements are always written with explicit namespace prefixes
-      that are assumed to be bound to URI references as shown in <xref
-      target="tab.ns"/>.</t>
-      <texttable
-          anchor="tab.ns"
-          title="Used namespace prefixes and corresponding URI references">
-        <ttcol>Prefix</ttcol>
-        <ttcol>URI Reference</ttcol>
-        <c>rng</c>
-        <c>http://relaxng.org/ns/structure/1.0</c>
-        <c>md</c>
-        <c>urn:ietf:params:xml:ns:yang:ietf-yang-metadata</c>
-        <c>ein</c>
-        <c>http://example.org/example-inactive</c>
-      </texttable>
+	<t>The following terms are defined in <xref target="RFC7159"/>:
+	<list style="symbols">
+          <t>array,</t>
+          <t>member,</t>
+          <t>object,</t>
+          <t>primitive type.</t>
+	</list></t>
+      </section>
+
+      <section anchor="ns-pref" title="Namespaces and Prefixes">
+	<t>In the following text, XML element names and YANG extension
+	statements are always written with explicit namespace prefixes
+	that are assumed to be bound to URI references as shown in <xref
+	target="tab.ns"/>.</t>
+	<texttable
+            anchor="tab.ns"
+            title="Used namespace prefixes and corresponding URI references">
+          <ttcol>Prefix</ttcol>
+          <ttcol>URI Reference</ttcol>
+          <c>rng</c>
+          <c>http://relaxng.org/ns/structure/1.0</c>
+          <c>md</c>
+          <c>urn:ietf:params:xml:ns:yang:ietf-yang-metadata</c>
+          <c>ein</c>
+          <c>http://example.org/example-inactive</c>
+	</texttable>
+      </section>
+
+      <section anchor="new-terms" title="Definitions of New Terms">
+	<t><list style="symbols">
+	  <t>annotation: a single item of metadata that is attached to
+	  YANG data node instances.</t>
+	  <t>metadata: additional information that complements a data
+	  tree.</t>
+	</list></t>
+      </section>
+
     </section>
 
     <section anchor="annotdef" title="Defining Annotations in YANG">
@@ -191,22 +212,35 @@
         <c>if-feature</c><c>7.19.2</c><c>0..n</c>
         <c>reference</c><c>7.20.4</c><c>0..1</c>
         <c>status</c><c>7.20.2</c><c>0..1</c>
-        <c>type</c><c>7.6.3</c><c>0..1</c>
+        <c>type</c><c>7.6.3</c><c>1</c>
         <c>units</c><c>7.3.3</c><c>0..1</c>
       </texttable>
-      <t>Using the "type" statement, a type may be specified for the
+      <t>Using the "type" statement, a type is specified for the
       annotation value according to the same rules as for YANG leaf or
-      leaf-list types. However, the "type" statement is optional as a
-      substatement of "md:annotation" statement. If it is not present,
-      the built-in "string" type is the default.</t>
-      <t>The "if-feature" statement, if present, makes the annotation
-      conditional; it is supported only by servers that advertise the
-      corresponding feature.</t>
-      <t>For example, the following module defines the "inactive"
-      annotation:</t>
-      <figure>
-        &example-inactive.yang;
-      </figure>
+      leaf-list types.</t>
+      <t>An annotation can be made conditional by using one or more
+      "if-feature" statements; the annotation is then supported only
+      by servers that advertise the corresponding feature.</t>
+      <t>The semantics and usage rules for an annotation SHOULD be
+      fully specified in "description", "reference" and "units"
+      statements.</t>
+      <t>The "status" statement can be used as for YANG data nodes,
+      see sec. 7.21.2 of <xref
+      target="I-D.ietf-netmod-rfc6020bis"/>.</t>
+      <t>A YANG module containing one or more "md:annotation"
+      extension statements SHOULD NOT be used for defining data nodes
+      or groupings. Also, derived types, identities and features
+      SHOULD NOT be defined in such a module unless they are used only
+      by the definitions of annotations in that module.</t>
+      <section anchor="ex-module" title="Example Definition">
+	<t>The following module defines the "last-modified"
+	annotation:</t>
+	<figure>
+          &example-last-modified.yang;
+	</figure>
+      </section>
+    </section>
+    <section anchor="usage" title="Using Annotations">
       <t>By advertising a YANG module in which metadata annotation A
       is defined using the "md:annotation" statement, a server
       specifies support for the syntax of annotation A. This means
@@ -295,12 +329,12 @@
 
         <section
             anchor="enc-cal"
-            title="Adding Annotations to Anydata, Container and List Instances">
+            title="Adding Annotations to Anydata, Container and List Entries">
 
-          <t>For an instance that is encoded as a JSON object (i.e., a
-          container, a list entry, or anydata node), the metadata
-          object is added as a new member of that object with the name
-          "@".</t>
+          <t>For a data node instance that is encoded as a JSON object
+          (i.e., a container, a list entry, or anydata node), the
+          metadata object is added as a new member of that object with
+          the name "@".</t>
           <t>Examples:
           <list style="symbols">
             <t>"cask" is a container node:
@@ -356,22 +390,22 @@
 
         <section
             anchor="enc-ll"
-            title="Adding Annotations to Leaf-list Instances">
+            title="Adding Annotations to Leaf-list Entries">
 
-          <t>For a leaf-list instance, which is represented as a JSON
+          <t>For a leaf-list entry, which is represented as a JSON
           array with values of a primitive type, annotations may be
           assigned to one or more entries by adding a name/array pair
-          as a sibling of the leaf-list instance, where the name is
+          as a sibling of the leaf-list entry, where the name is
           symbol "@" concatenated with the name of the leaf-list that
           is being annotated, and the value is a JSON array whose i-th
           element is the metadata object with annotations assigned to
-          the i-th entry of the leaf-list instance, or null if the
-          i-th entry has no annotations.</t>
+          the i-th entry of the leaf-list entry, or null if the i-th
+          entry has no annotations.</t>
           <t>Trailing null values in that array, i.e., those following
           the last non-null metadata object, MAY be omitted.</t>
-          <t>For example, in the following leaf-list instance with four
-          entries, the "inactive" annotation is added to the second and
-          third entry in the following way:
+          <t>For example, in the following leaf-list instance with
+          four entries, the "inactive" annotation is added to the
+          second and third entry in the following way:
           <figure>
             <artwork>
 "bibliomod:folio": [6, 3, 7, 8],
@@ -484,8 +518,9 @@
 
       &ed-hint-fill-in;
 
-      <t>This document registers the following namespace URI in the
-      "IETF XML registry" <xref target="RFC3688"/>:</t>
+      <t>This document registers a URI in the "IETF XML registry"
+      <xref target="RFC3688"/>. Following the format in RFC 3688, the
+      following registration has been made.</t>
       <figure>
         <artwork>
 ---------------------------------------------------------------------
@@ -498,9 +533,8 @@ XML: N/A, the requested URI is an XML namespace.
         </artwork>
       </figure>
 
-      <t>This document registers the following YANG module in the
-      "YANG Module Names" registry <xref
-      target="I-D.ietf-netmod-rfc6020bis"/>:</t>
+      <t>This document registers a YANG module in the "YANG Module
+      Names" registry <xref target="RFC6020"/>.</t>
 
       <figure>
         <artwork>
@@ -540,6 +574,7 @@ reference:    RFC XXXX
       &I-D.ietf-netmod-yang-json;
       &RFC2119;
       &RFC3688;
+      &RFC6020;
       &RFC6110;
       &RFC6241;
       &RFC7159;
@@ -584,7 +619,7 @@ reference:    RFC XXXX
           </list>
         </t>
       </section>
-      
+
       <section title="Changes Between draft-lhotka-netmod-yang-metadata-00 and -01">
         <t>
           <list style="symbols">
