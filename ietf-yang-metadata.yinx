@@ -47,23 +47,23 @@
 	at the top level of a YANG module.</h:p>
 	<h:p>The argument of the 'md:annotation' statement defines the
 	name of the annotation. Syntactically it is a YANG identifier
-	as defined in RFC 6020bis (TODO: update the reference!),
-	sec. 6.2.</h:p>
+	as defined in RFC 6020bis, sec. 6.2.</h:p>
 	<h:p>An annotation defined with this extension statement
 	inherits the namespace and other context from the YANG module
 	in which it is defined.</h:p>
-	<h:p>Other properties of the annotation and documentation
-	are specified using the following standard YANG substatements
+	<h:p>Data type of the annotation value is specified in the
+	same way as for a leaf data node using the 'type'
+	statement.</h:p>
+	<h:p>Semantics of the annotation and other documentation can
+	be specified using the following standard YANG substatements
 	(all are optional): 'description', 'if-feature', 'reference',
-	'status', 'type' and 'units'. If the 'type' statement is not
-	present, the built-in 'string' type is used by default.</h:p>
-	<h:p>A server announces syntactic support for a particular
-	annotation by including the module in which the annotation is
-	defined among the advertised YANG modules (e.g., in NETCONF
-	hello message).</h:p>
-	<h:p>Semantics and usage rules for an annotation MUST be
-	specified separately. The 'description' and/or 'reference'
-	statements SHOULD provide corresponding links.</h:p>
+	'status', and 'units'.</h:p>
+	<h:p>A server announces support for a particular annotation by
+	including the module in which the annotation is defined among
+	the advertised YANG modules (e.g., in NETCONF hello message or
+	yang-library). The annotation then can be attached to any
+	instance of data node defined in any YANG module that is
+	advertised by the server.</h:p>
 	<h:p>XML and JSON encoding of annotations is defined in
 	RFC XXXX.</h:p>
       </text>
