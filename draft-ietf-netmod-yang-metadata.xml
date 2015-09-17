@@ -63,9 +63,9 @@
       </list></t>
       <t>However, metadata annotations could potentially lead to
       interoperability problems if they are used in an ad hoc fashion
-      by different organizations and/or without proper
-      documentation. A sound metadata framework for YANG should
-      therefore satisfy these requirements:
+      by different parties and/or without proper documentation. A
+      sound metadata framework for YANG should therefore satisfy these
+      requirements:
       <list style="numbers">
         <t>The set of annotations must be extensible in a
         decentralised manner so as to allow for defining new
@@ -75,9 +75,9 @@
         the documentation must be easily accessible.</t>
         <t>Clients of network management protocols such as
         NETCONF <xref target="RFC6241"/> or RESTCONF <xref
-        target="I-D.ietf-netconf-restconf"/> must be able to learn all
-        annotations supported by a given server and identify each of
-        them correctly.</t>
+        target="I-D.ietf-netconf-restconf"/> must be able to discover
+        all annotations supported by a given server and identify each
+        of them correctly.</t>
 	<t>Annotations sent by a server should not break clients that
 	don't support them.</t>
       </list></t>
@@ -98,8 +98,8 @@
         "YANG Module Names" registry <xref target="RFC6020"/>.</t>
         <t>Annotations are included in the data model. YANG compilers
         and tools supporting a certain annotation can thus take them
-        into account and modify their behaviour accordingly.</t>
-	<t>Semantics of an annotation is defined in the "description"
+        into account and modify their behavior accordingly.</t>
+	<t>Semantics of an annotation are defined in the "description"
 	and "reference" statements.</t>
         <t>An annotation can be declared as conditional by using the
         "if-feature" statement.</t>
@@ -141,21 +141,20 @@
 
 	<t>The following terms are defined in <xref target="I-D.ietf-netmod-rfc6020bis"/>:
 	<list style="symbols">
+          <t>action,</t>
           <t>anydata,</t>
           <t>anyxml,</t>
-          <t>built-in type,</t>
+          <t>data type,</t>
           <t>container,</t>
           <t>data model,</t>
           <t>data node,</t>
 	  <t>data tree,</t>
-          <t>derived type,</t>
           <t>extension,</t>
+          <t>leaf,</t>
           <t>leaf-list,</t>
           <t>list,</t>
           <t>module,</t>
-          <t>RPC operation,</t>
-          <t>submodule,</t>
-          <t>type.</t>
+          <t>RPC input and output.</t>
 	</list></t>
 
 	<t>The following terms are defined in <xref
@@ -270,12 +269,17 @@
       <t>By advertising a YANG module in which a metadata annotation
       is defined using the "md:annotation" statement, a server
       indicates that it is prepared to handle that annotation anywhere
-      in the configuration and/or state data tree. That is, an
-      annotation advertised by the server may be attached to any
-      instance of a data node defined in any YANG module that is also
-      advertised by the server.</t>
-      <t>A client MUST NOT use a specific annotation in protocol
-      messages if the server didn't advertise it.</t>
+      in any data tree that is a part of the server's data model
+      (configuration, state data, RPC operation/action input or
+      output). That is, an annotation advertised by the server may be
+      attached to any instance of a data node defined in any YANG
+      module that is also advertised by the server.</t>
+      <t>Depending on its semantics, an annotation may have an effect
+      only in certain data trees and/or on instances of specific data
+      nodes types. If such an annotation appears elsewhere, it is
+      syntactically valid but the annotation is ignored.</t>
+      <t>A client MUST NOT use an annotation in protocol operations if
+      the server didn't advertise it.</t>
       <t>Annotations modify the schema of datastores and/or management
       protocol messages, and may also change their
       semantics. Therefore, due care has to be exercised when
@@ -363,15 +367,17 @@
           defined in sec. 13 of <xref
           target="I-D.ietf-netmod-rfc6020bis"/>
           <figure>
-            <artwork>identifier ":" identifier</artwork>
+            <artwork>annotation-name = identifier ":" identifier</artwork>
           </figure>
           where the left identifier is the name of the YANG module in
           which the annotation is defined, and the identifier on the
           right is the name of the annotation specified in the
           argument of the corresponding "md:annotation" statement.</t>
-          <t>Note that unlike YANG data node instances, for
-          annotations the explicit namespace identifier (module name)
-          must always be used.</t>
+          <t>Note that unlike member names of YANG data node instances
+          in JSON encoding (see sec. 4 in <xref
+          target="I-D.ietf-netmod-yang-json"/>), for annotations the
+          explicit namespace identifier (module name) must always be
+          present.</t>
           <t>The value of a metadata annotation SHALL be encoded in
           exactly the same way as the value of a YANG leaf node having
           the same type as the annotation, see <xref
@@ -435,8 +441,8 @@
           <t>Examples:
 	  <list style="symbols">
 	    <t>"flag" is a leaf node of the "boolean" type defined in
-	    module "foo" (we assume the namespace name has to be
-	    expressed in its JSON encoding):
+	    module "foo", and we assume the namespace name has to be
+	    expressed in its JSON encoding:
             <figure>
               <artwork>
 "foo:flag": true,
@@ -523,16 +529,17 @@
         is mapped to the following RELAX NG pattern:
         <figure>
           <artwork>
-    <![CDATA[<rng:attribute name="PREFIX:ARGUMENT">
-      ...
-    </rng:attribute>]]></artwork>
+    <![CDATA[<rng:optional>
+      <rng:attribute name="PREFIX:ARGUMENT">
+        ...
+      </rng:attribute>
+    </rng:optional>]]></artwork>
         </figure>
         where PREFIX is the prefix bound to the namespace URI of the
-        YANG module that contains the "md:annotation" statement. Each
-        "rng:attribute" pattern SHALL be wrapped in the
-        &lt;rng:optional&gt; pattern, and this SHALL be inserted as a
-        child of the named pattern described in item <xref
-        target="it.npdef" format="counter"/>.</t>
+        YANG module that contains the "md:annotation" statement. The
+        above pattern SHALL be inserted as a child of the named
+        pattern described in item <xref target="it.npdef"
+        format="counter"/>.</t>
         <t>Substatements of "md:annotation" SHALL be mapped to
         children of the "rng:attribute" pattern exactly as described
         in sec. 10 of <xref target="RFC6110"/>.</t>
@@ -546,9 +553,7 @@
 <![CDATA[<rng:define name="__yang_metadata__">
   <rng:optional>
     <rng:attribute name="elm:last-modified">
-      <rng:data type="string">
-        <rng:param name="pattern">...</rng:param>
-      </rng:data>
+      <rng:ref name="ietf-yang-types__date-and-time"/>
     </rng:attribute>
   </rng:optional>
 </rng:define>]]></artwork>
@@ -620,13 +625,13 @@ reference:    RFC XXXX
 
     <section anchor="security" title="Security Considerations">
 
-      <t>This document introduces a mechanism for defining the syntax
-      of metadata annotations in YANG modules and using them with
-      instances of YANG data nodes. By itself, this mechanism
-      represents no security threat. Security implications of a
-      particular annotation defined using this mechanism have to be
-      duly considered and documented in the specification of the
-      annotation's semantics.</t>
+      <t>This document introduces a mechanism for defining metadata
+      annotations in YANG modules and attaching them to instances of
+      YANG data nodes. By itself, this mechanism represents no
+      security threat. Security implications of a particular
+      annotation defined using this mechanism MUST be duly
+      considered and documented in the the annotation's
+      definition.</t>
       <t>An annotation SHOULD be subject to the same or stricter
       access control rules as the data node instance to which the
       annotation is attached.</t>
@@ -634,7 +639,7 @@ reference:    RFC XXXX
     </section>
 
     <section anchor="sec.ack" title="Acknowledgments">
-      <t>The author wishes to thank Andy Bierman, Martin Bjorklund
+      <t>The author wishes to thank Andy Bierman, Martin Bjorklund,
       Benoit Claise, Juergen Schoenwaelder, and Kent Watsen for their
       helpful comments and suggestions.</t>
     </section>
