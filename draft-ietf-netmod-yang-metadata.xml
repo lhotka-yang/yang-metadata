@@ -49,8 +49,8 @@
       <list style="symbols">
         <t>Complementing regular data model information with
         instance-specific metadata, comments etc.</t>
-	<t>Providing information about data rendering in user
-	interfaces.</t>
+        <t>Providing information about data rendering in user
+        interfaces.</t>
         <t>Deactivating a subtree in a configuration datastore while
         keeping the data in place.</t>
         <t>Network management protocols often use metadata annotations
@@ -78,8 +78,8 @@
         target="I-D.ietf-netconf-restconf"/> must be able to discover
         all annotations supported by a given server and identify each
         of them correctly.</t>
-	<t>Annotations sent by a server should not break clients that
-	don't support them.</t>
+        <t>Annotations sent by a server should not break clients that
+        don't support them.</t>
       </list></t>
       <t>This document proposes a systematic way for defining metadata
       annotations. For this purpose, YANG extension statement
@@ -90,17 +90,18 @@
       <t>The benefits of defining the metadata annotations in a YANG
       module are the following:
       <list style="symbols">
-        <t>Each annotation is bound to a YANG module name, namespace
-        URI and prefix. This makes its encoding in instance documents
+        <t>Each annotation is bound to a YANG module name and
+        namespace URI. This makes its encoding in instance documents
         (both XML and JSON) straightforward and consistent with the
         encoding of YANG data node instances.</t>
-        <t>Annotations are indirectly registered through IANA in the
-        "YANG Module Names" registry <xref target="RFC6020"/>.</t>
+        <t>Annotations defined in IETF standard-track documents are
+        indirectly registered through IANA in the "YANG Module Names"
+        registry <xref target="RFC6020"/>.</t>
         <t>Annotations are included in the data model. YANG compilers
         and tools supporting a certain annotation can thus take them
         into account and modify their behavior accordingly.</t>
-	<t>Semantics of an annotation are defined in the "description"
-	and "reference" statements.</t>
+        <t>Semantics of an annotation are defined in the "description"
+        and "reference" statements.</t>
         <t>An annotation can be declared as conditional by using the
         "if-feature" statement.</t>
         <t>Values of annotations are not limited to strings; any YANG
@@ -112,35 +113,35 @@
       compatible with the XML encoding of YANG data node instances and
       limitations of XML attributes. Specifically,
       <list style="symbols">
-	<t>annotations are scalar values and cannot be further structured;</t>
-	<t>annotations cannot be attached to a whole list or leaf-list
-	instance, only to individual list of leaf-list entries.</t>
+        <t>annotations are scalar values and cannot be further structured;</t>
+        <t>annotations cannot be attached to a whole list or leaf-list
+        instance, only to individual list or leaf-list entries.</t>
       </list></t>
     </section>
 
     <section anchor="terminology" title="Terminology">
 
       <section anchor="keywords" title="Keywords">
-	<t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
-	"SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and
-	"OPTIONAL" in this document are to be interpreted as described
-	in <xref target="RFC2119"/>.</t>
+        <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL",
+        "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and
+        "OPTIONAL" in this document are to be interpreted as described
+        in <xref target="RFC2119"/>.</t>
       </section>
 
       <section anchor="adopted-terms"
-	       title="Terms Defined in Other Documents">
-	<t>The following terms are defined in <xref target="RFC6241"/>:
-	<list style="symbols">
-	  <t>capability,</t>
+               title="Terms Defined in Other Documents">
+        <t>The following terms are defined in <xref target="RFC6241"/>:
+        <list style="symbols">
+          <t>capability,</t>
           <t>client,</t>
           <t>datastore,</t>
           <t>message,</t>
           <t>protocol operation,</t>
           <t>server.</t>
-	</list></t>
+        </list></t>
 
-	<t>The following terms are defined in <xref target="I-D.ietf-netmod-rfc6020bis"/>:
-	<list style="symbols">
+        <t>The following terms are defined in <xref target="I-D.ietf-netmod-rfc6020bis"/>:
+        <list style="symbols">
           <t>action,</t>
           <t>anydata,</t>
           <t>anyxml,</t>
@@ -148,47 +149,47 @@
           <t>container,</t>
           <t>data model,</t>
           <t>data node,</t>
-	  <t>data tree,</t>
+          <t>data tree,</t>
           <t>extension,</t>
           <t>leaf,</t>
           <t>leaf-list,</t>
           <t>list,</t>
           <t>module,</t>
           <t>RPC input and output.</t>
-	</list></t>
+        </list></t>
 
-	<t>The following terms are defined in <xref
-	target="W3C.REC-xml-infoset-20040204"/>:
-	<list style="symbols">
+        <t>The following terms are defined in <xref
+        target="W3C.REC-xml-infoset-20040204"/>:
+        <list style="symbols">
           <t>attribute,</t>
           <t>document,</t>
           <t>element.</t>
-	</list></t>
+        </list></t>
 
-	<t>The following terms are defined in <xref
-	target="W3C.REC-xml-names11-20060816"/>:
-	<list style="symbols">
-	  <t>local name,</t>
+        <t>The following terms are defined in <xref
+        target="W3C.REC-xml-names11-20060816"/>:
+        <list style="symbols">
+          <t>local name,</t>
           <t>namespace name,</t>
           <t>prefix,</t>
-	  <t>qualified name.</t>
-	</list></t>
+          <t>qualified name.</t>
+        </list></t>
 
-	<t>The following terms are defined in <xref target="RFC7159"/>:
-	<list style="symbols">
+        <t>The following terms are defined in <xref target="RFC7159"/>:
+        <list style="symbols">
           <t>array,</t>
           <t>member,</t>
           <t>object,</t>
           <t>primitive type.</t>
-	</list></t>
+        </list></t>
       </section>
 
       <section anchor="ns-pref" title="Namespaces and Prefixes">
-	<t>In the following text, XML element names and YANG extension
-	statements are always written with explicit namespace prefixes
-	that are assumed to be bound to URI references as shown in <xref
-	target="tab.ns"/>.</t>
-	<texttable
+        <t>In the following text, XML element names and YANG extension
+        statements are always written with explicit namespace prefixes
+        that are assumed to be bound to URI references as shown in <xref
+        target="tab.ns"/>.</t>
+        <texttable
             anchor="tab.ns"
             title="Used namespace prefixes and corresponding URI references">
           <ttcol>Prefix</ttcol>
@@ -199,18 +200,18 @@
           <c>urn:ietf:params:xml:ns:yang:ietf-yang-metadata</c>
           <c>rng</c>
           <c>http://relaxng.org/ns/structure/1.0</c>
-	</texttable>
+        </texttable>
       </section>
 
       <section anchor="new-terms" title="Definitions of New Terms">
-	<t><list style="symbols">
-	  <t>annotation: a single item of metadata that is attached to
-	  YANG data node instances.</t>
-	  <t>metadata: additional information that complements a data
-	  tree.</t>
-	  <t>metadata object: an object in JSON encoding that contains
-	  all annotations attached to a given data node instance.</t>
-	</list></t>
+        <t><list style="symbols">
+          <t>annotation: a single item of metadata that is attached to
+          YANG data node instances.</t>
+          <t>metadata: additional information that complements a data
+          tree.</t>
+          <t>metadata object: an object in JSON encoding that contains
+          all annotations attached to a given data node instance.</t>
+        </list></t>
       </section>
 
     </section>
@@ -258,51 +259,39 @@
       SHOULD NOT be defined in such a module unless they are used by
       the definitions of annotations in that module.</t>
       <section anchor="ex-module" title="Example Definition">
-	<t>The following module defines the "last-modified"
-	annotation:</t>
-	<figure>
+        <t>The following module defines the "last-modified"
+        annotation:</t>
+        <figure>
           &example-last-modified.yang;
-	</figure>
+        </figure>
       </section>
     </section>
     <section anchor="usage" title="Using Annotations">
       <t>By advertising a YANG module in which a metadata annotation
       is defined using the "md:annotation" statement, a server
-      indicates that it is prepared to handle that annotation anywhere
-      in any data tree that is a part of the server's data model
-      (configuration, state data, RPC operation/action input or
-      output). That is, an annotation advertised by the server may be
-      attached to any instance of a data node defined in any YANG
-      module that is also advertised by the server.</t>
+      indicates that it is prepared to handle that annotation
+      according to the annotation's definition. That is, an
+      annotation advertised by the server may be attached to an
+      instance of a data node defined in any YANG module that is
+      implemented by the server.</t>
       <t>Depending on its semantics, an annotation may have an effect
       only in certain data trees and/or on instances of specific data
-      nodes types. If such an annotation appears elsewhere, it is
-      syntactically valid but the annotation is ignored.</t>
-      <t>A client MUST NOT use an annotation in protocol operations if
-      the server didn't advertise it.</t>
-      <t>Annotations modify the schema of datastores and/or management
-      protocol messages, and may also change their
-      semantics. Therefore, due care has to be exercised when
-      introducing annotations in network management systems in order
-      to avoid interoperability problems and software failures. The
-      following aspects should be taken into account:
+      nodes types.</t>
+      <t>A client MUST NOT add a specific annotation to data node
+      instances if the server didn't advertise it.</t>
+      <t>Due care has to be exercised when introducing annotations in
+      network management systems in order to avoid interoperability
+      problems and software failures caused by a client that does not
+      understand the annotations' semantics. Generally, it is safe for
+      a server to use annotations in the following cases:
       <list style="symbols">
-	<t>A client may not not be able to parse or validate protocol
-	messages containing annotations.</t>
-	<t>A client may not understand semantics of an annotation set
-	by the server or other clients.</t>
-      </list></t>
-      <t>Generally, it is safe for a server to use annotations in the
-      following cases, provided that the client is able to parse them
-      and discard those that it doesn't understand or support:
-      <list style="symbols">
-	<t>An annotation is an integral part of a built-in or
-	negotiated protocol capability.</t>
-	<t>An annotation contains optional information that is not
-	critical for protocol operation.</t>
-	<t>The client explicitly asks the server, e.g., via a
-	parameter of a protocol operation request, for including an
-	annotation in the response.</t>
+        <t>An annotation is an integral part of a built-in or
+        negotiated protocol capability.</t>
+        <t>An annotation contains auxiliary information that is not
+        critical for protocol operation.</t>
+        <t>The client explicitly asks the server, e.g., via a
+        parameter of a protocol operation request, for including an
+        annotation in the response.</t>
       </list></t>
     </section>
 
@@ -439,10 +428,10 @@
           included if and only if it is in the name of the annotated
           member.</t>
           <t>Examples:
-	  <list style="symbols">
-	    <t>"flag" is a leaf node of the "boolean" type defined in
-	    module "foo", and we assume the namespace name has to be
-	    expressed in its JSON encoding:
+          <list style="symbols">
+            <t>"flag" is a leaf node of the "boolean" type defined in
+            module "foo", and we assume the namespace name has to be
+            expressed in its JSON encoding:
             <figure>
               <artwork>
 "foo:flag": true,
@@ -451,7 +440,7 @@
     "2015-09-16T10:27:35+02:00"
 }</artwork>
             </figure></t>
-	    <t>"stuff" is an anyxml node:
+            <t>"stuff" is an anyxml node:
             <figure>
               <artwork>
 "stuff": [1, null, "three"],
@@ -460,7 +449,7 @@
     "2015-09-16T10:27:35+02:00"
 }</artwork>
             </figure></t>
-	  </list></t>
+          </list></t>
         </section>
 
         <section
@@ -683,30 +672,41 @@ reference:    RFC XXXX
       &ed-hint-remove-sec;
 
       <section title="Changes Between Revisions -01 and -02">
-	<t>
-	  <list style="symbols">
-	    <t>The "type" statement became mandatory.</t>
-	    <t>Terminology section was extended.</t>
-	    <t>The annotation "inactive" defined in the
-	    example module was replaced with "last-modified"
-	    that is supposedly less controversial.</t>
-	    <t>Introduction now states limitation due to XML attribute
-	    porperties.</t>
-	    <t>A recommendation was added to define annotations in a
-	    module by themselves.</t>
-	    <t>Section "Using Annotations" was added.</t>
-	    <t>An example for "anyxml" was added.</t>
-	    <t>RFC 6241 was moved to informative references.</t>
-	  </list>
-	</t>
+        <t>
+          <list style="symbols">
+            <t><xref target="usage"/> was considerably simplified,
+            also because member names starting with "@" are now
+            permitted by <xref
+            target="I-D.ietf-netmod-yang-json"/>.</t>
+          </list>
+        </t>
+      </section>
+
+      <section title="Changes Between Revisions -01 and -02">
+        <t>
+          <list style="symbols">
+            <t>The "type" statement became mandatory.</t>
+            <t>Terminology section was extended.</t>
+            <t>The annotation "inactive" defined in the
+            example module was replaced with "last-modified"
+            that is supposedly less controversial.</t>
+            <t>Introduction now states limitation due to XML attribute
+            properties.</t>
+            <t>A recommendation was added to define annotations in a
+            module by themselves.</t>
+            <t>Section "Using Annotations" was added.</t>
+            <t>An example for "anyxml" was added.</t>
+            <t>RFC 6241 was moved to informative references.</t>
+          </list>
+        </t>
       </section>
 
       <section title="Changes Between Revisions -00 and -01">
-	<t>
-	  <list style="symbols">
-	    <t>Define JSON encoding for annotations attached to 'anydata' nodes.</t>
-	  </list>
-	</t>
+        <t>
+          <list style="symbols">
+            <t>Define JSON encoding for annotations attached to 'anydata' nodes.</t>
+          </list>
+        </t>
       </section>
       <section title="Changes Between draft-lhotka-netmod-yang-metadata-01 and draft-ietf-netmod-yang-metadata-00">
         <t>
