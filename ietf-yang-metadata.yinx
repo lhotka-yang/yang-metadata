@@ -44,7 +44,9 @@
       <text>
 	<h:p>This extension allows for defining metadata annotations
 	in YANG modules. The 'md:annotation' statement can appear only
-	at the top level of a YANG module.</h:p>
+	at the top level of a YANG module or submodule, i.e. it
+	becomes a new alternative in the ABNF production rule for
+	'body-stmts' (sec. 14 in RFC 6020bis).</h:p>
 	<h:p>The argument of the 'md:annotation' statement defines the
 	name of the annotation. Syntactically it is a YANG identifier
 	as defined in RFC 6020bis, sec. 6.2.</h:p>

@@ -571,6 +571,9 @@
 
       &ed-hint-fill-in;
 
+      <t>RFC Editor: Also please replace all occurrences of
+      'RFC 6020bis' with the actual RFC number that will be assigned
+      to <xref target="I-D.ietf-netmod-rfc6020bis"/>.</t>
       <figure>
         &ietf-yang-metadata.yang;
       </figure>
@@ -671,7 +674,16 @@ reference:    RFC XXXX
 
       &ed-hint-remove-sec;
 
-      <section title="Changes Between Revisions -01 and -02">
+      <section title="Changes Between Revisions -03 and -04">
+        <t>
+          <list style="symbols">
+	    <t>Added explanation of what "top level of a module"
+	    means.</t>
+	  </list>
+	</t>
+      </section>
+
+      <section title="Changes Between Revisions -02 and -03">
         <t>
           <list style="symbols">
             <t><xref target="usage"/> was considerably simplified,
