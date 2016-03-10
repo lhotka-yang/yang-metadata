@@ -20,7 +20,7 @@
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
 
-<rfc category="std">
+<rfc category="std" updates="6110">
   <front>
     <title abbrev="YANG Metadata">Defining and Using Metadata with YANG</title>
     <author fullname="Ladislav Lhotka" initials="L." surname="Lhotka">
@@ -105,7 +105,7 @@
         <t>An annotation can be declared as conditional by using the
         "if-feature" statement.</t>
         <t>Values of annotations are not limited to strings; any YANG
-        built-in or derived type may be used for them.</t>
+        built-in or derived type may be specified for them.</t>
       </list></t>
       <t>In the XML encoding, XML attributes are a natural instrument
       for attaching annotations to data node instances. This document
@@ -113,10 +113,21 @@
       compatible with the XML encoding of YANG data node instances and
       limitations of XML attributes. Specifically,
       <list style="symbols">
-        <t>annotations are scalar values and cannot be further structured;</t>
+        <t>annotations are scalar values and cannot be further
+	structured;</t>
         <t>annotations cannot be attached to a whole list or leaf-list
         instance, only to individual list or leaf-list entries.</t>
       </list></t>
+      <t>Due to the rules for YANG extensions (see sec. 6.3.1 in <xref
+      target="I-D.ietf-netmod-rfc6020bis"/>), annotation definitions
+      posit relatively weak conformance requirements. The alternative
+      of introducing a new built-in YANG statement for defining
+      annotations was considered, but it was seen as a major change to
+      the language that is inappropriate for YANG 1.1, which was
+      chartered as a maintenance revision. After evaluating real-life
+      usage of metadata annotations, it is conceivable that such a new
+      built-in statement might be added in a future revision of
+      YANG.</t>
     </section>
 
     <section anchor="terminology" title="Terminology">
@@ -145,11 +156,12 @@
           <t>action,</t>
           <t>anydata,</t>
           <t>anyxml,</t>
-          <t>data type,</t>
+          <t>built-in type,</t>
           <t>container,</t>
           <t>data model,</t>
           <t>data node,</t>
           <t>data tree,</t>
+	  <t>derived type,</t>
           <t>extension,</t>
           <t>leaf,</t>
           <t>leaf-list,</t>
@@ -673,6 +685,15 @@ reference:    RFC XXXX
     <section title="Change Log">
 
       &ed-hint-remove-sec;
+
+      <section title="Changes Between Revisions -04 and -05">
+        <t>
+          <list style="symbols">
+	    <t>Added explanation of why a YANG extension is used
+	    rather than a built-in statement.</t>
+	  </list>
+	</t>
+      </section>
 
       <section title="Changes Between Revisions -03 and -04">
         <t>
