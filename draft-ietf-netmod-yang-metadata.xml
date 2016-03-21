@@ -104,8 +104,10 @@
         and "reference" statements.</t>
         <t>An annotation can be declared as conditional by using the
         "if-feature" statement.</t>
-        <t>Values of annotations are not limited to strings; any YANG
-        built-in or derived type may be specified for them.</t>
+        <t>The type of each annotation is explicitly specified; any
+        YANG built-in or derived type that is available for leaf or
+        leaf-list data nodes may be specified for annotations as
+        well.</t>
       </list></t>
       <t>In the XML encoding, XML attributes are a natural instrument
       for attaching annotations to data node instances. This document
@@ -113,8 +115,7 @@
       compatible with the XML encoding of YANG data node instances and
       limitations of XML attributes. Specifically,
       <list style="symbols">
-        <t>annotations are scalar values and cannot be further
-	structured;</t>
+        <t>annotations can only be scalar values;</t>
         <t>annotations cannot be attached to a whole list or leaf-list
         instance, only to individual list or leaf-list entries.</t>
       </list></t>
@@ -250,9 +251,11 @@
         <c>type</c><c>7.6.3</c><c>1</c>
         <c>units</c><c>7.3.3</c><c>0..1</c>
       </texttable>
-      <t>Using the "type" statement, a type is specified for the
-      annotation value according to the same rules as for YANG "leaf"
-      type.</t>
+      <t>An annotation carries a single value. The type substatement,
+      which MUST be present, takes as an argument the name of an
+      existing built-in or derived type, and the value of the
+      annotation MUST match this type. See Section 7.4 of <xref
+      target="I-D.ietf-netmod-rfc6020bis"/> for details.</t>
       <t>An annotation can be made conditional by using one or more
       "if-feature" statements; the annotation is then supported only
       by servers that advertise the corresponding feature.</t>
@@ -686,11 +689,19 @@ reference:    RFC XXXX
 
       &ed-hint-remove-sec;
 
-      <section title="Changes Between Revisions -04 and -05">
+      <section title="Changes Between Revisions -05 and -06">
         <t>
           <list style="symbols">
 	    <t>Added explanation of why a YANG extension is used
 	    rather than a built-in statement.</t>
+	  </list>
+	</t>
+      </section>
+
+      <section title="Changes Between Revisions -04 and -05">
+        <t>
+          <list style="symbols">
+	    <t>Clarification regarding the type of an annotation.</t>
 	  </list>
 	</t>
       </section>

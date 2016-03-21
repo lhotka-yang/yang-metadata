@@ -1,5 +1,5 @@
 I_D = draft-ietf-netmod-yang-metadata
-REVNO = 05
+REVNO = 06
 DATE ?= $(shell date +%F)
 MODULES = ietf-yang-metadata
 SUBMODULES =
